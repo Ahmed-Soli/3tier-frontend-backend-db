@@ -1,0 +1,15 @@
+app:
+  replicas: 1
+  container:
+    port: "3001"
+    image: ahmedsoliman202/3tier-backend-app
+  service:
+    target_port: 3001
+    node_port: 30009
+
+
+hpa:
+  enable: false
+  minReplicas: 4
+  maxReplicas: 10
+  percentage: 50

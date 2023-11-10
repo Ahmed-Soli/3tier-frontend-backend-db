@@ -1,0 +1,9 @@
+app:
+  replicas: 1
+  mongodb_data:
+    container_port: 27017
+    node_port: 30332
+    image: mongo
+    env:
+      USER: username
+      PASS: password
