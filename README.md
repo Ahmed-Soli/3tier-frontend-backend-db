@@ -11,7 +11,7 @@
 4. [Phase 1 ( How to run the project Locally using Docker)](#local)
 5. [Phase 2 ( Containerizing the 3tier web app Using Docker)](#docker)
 6. [Phase 3 ( Building CI to push the 3tier web app to dockerhub using Jenkins)](#jenkins)
-7. [Phase 4 ( Deploying the 3tier web app with Kubernetes)](#Kubernetes)
+7. [Phase 4 ( Deploying the 3tier web app with Kubernetes using Deployment, Services and Ingress)](#Kubernetes)
 8. [Phase 5 ( Deploying the 3tier web app with Helm Charts)](#helm)
 9. [Phase 6 ( Building CD of the 3tier web app Using ArgoCD and Helm Charts)](#argocd)
 10. [Time for some Screen Shots](#screen_shots)
@@ -122,7 +122,7 @@ including instructions for installation and troubleshooting?
     docker run -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock liatrio/jenkins-alpine
     ```
 
-## Phase 4 ( deploying the web app with Kubernetes)<a name="Kubernetes"></a>
+## Phase 4 ( deploying the web app with Kubernetes using Deployment, Services and Ingress)<a name="Kubernetes"></a>
 
 - Make sure you have `kubectl`,`minikube` installed from the [Kubernetes docs](https://kubernetes.io/docs/tasks/tools/)
 
@@ -157,10 +157,29 @@ including instructions for installation and troubleshooting?
         ```bash
         minikube service frontend-app-svc
         ```
+- I defined a k8 `Ingress` resource in `ingress.yaml` of path type [`Prefix`](https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types) and type [`Simple Fanout`](https://kubernetes.io/docs/concepts/services-networking/ingress/#simple-fanout) so that I can Expose the web app to the public and access it using human readable host like `robusta.io` and ingress will take care of routing the traffic based on the `URI` to the right servies and hence to the right pods
+    - ![Ingress Diagram](./screen_shots/ingressFanOut.svg)
+    - In order to deploy the ingress manifest, We can use this command
+        ```bash
+        k create -f ./kubernetes_mainfests/ingress.yaml
+        ```
+    - Now we need to add a rule in minikube to route the traffic using minikube ip (`192.168.49.2`) to the host (`robusta.io`) which we added in the ingress as follows:
+        ```bash
+        minikube ssh
+        sudo /bin/sh -c 'echo "192.168.49.2 robusta.io" >> /etc/hosts'
+        ```
+
+    - to test the web app, within the minikube ssh session we can query the URLS of our 3tier web app
+        ```bash
+        curl robusta.io/
+        curl robusta.io/backend
+        curl robusta.io/db
+        ```
 
 - Side Note:
     - I have set the `replicas` in the `backend-deployment.yaml` and `frontend-deployment.yaml` to `5` to achieve high availability of the service.
     - I have defined a `PersistentVolume` resource in `db-deployment.yaml` to achieve volume persistence.
+
 
 ## Phase 5 ( deploying the web app with Helm Charts)<a name="helm"></a>
 
@@ -232,12 +251,12 @@ including instructions for installation and troubleshooting?
 ## Time for some Screen Shots<a name="screen_shots"></a>
 - Running the web app locally
 ![05-app](screen_shots/05-app.png)
+- Testing The app while it's running through docker-compose
+![10-app-in-action](screen_shots/10-app-in-action.png)
 - Building a Docker image
 ![08-docker-build.png](screen_shots/08-docker-build.png)
 - Starting backend-app container and db-container through docker-compose
 ![09-docker-compose](screen_shots/09-docker-compose.png)
-- Testing The app while it's running through docker-compose
-![10-app-in-action](screen_shots/10-app-in-action.png)
 - Running Jenkins stages to build and push the docker image to Dockerhub
 ![01-jenkins](screen_shots/01-jenkins.png)
 - Jenkins successfully built and pushed the docker image to Dockerhub
