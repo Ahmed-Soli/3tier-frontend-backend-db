@@ -33,7 +33,7 @@ spec:
   ports: 
     - name: "mongo"
       port: 27017
-      nodePort: 30332
+      nodePort: 30010
   type: "NodePort"
   selector: 
     app: "mongo"
