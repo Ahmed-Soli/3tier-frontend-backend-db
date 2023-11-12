@@ -14,7 +14,8 @@
 7. [Phase 4 ( Deploying the 3tier web app with Kubernetes using Deployment, Services and Ingress)](#Kubernetes)
 8. [Phase 5 ( Deploying the 3tier web app with Helm Charts)](#helm)
 9. [Phase 6 ( Building CD of the 3tier web app Using ArgoCD and Helm Charts)](#argocd)
-10. [Time for some Screen Shots](#screen_shots)
+10. [Phase 7 ( How to test the 3tier web app from anywhere )](#remote)
+11. [Time for some Screen Shots](#screen_shots)
 
 ## Devops Challenge <a name="req"></a>
 
@@ -248,6 +249,17 @@ including instructions for installation and troubleshooting?
     - If you are using windows, make sure to rename the downloaded argocd cli from `argocd-windows-amd64.exe` to `argocd.exe`
     - Aslo make sure to add `argocd.exe` location to windows environment variable `path`
 
+## Phase 7 ( How to test the 3tier web app from anywhere )<a name="remote"></a>
+
+- I'm hosting the containerized 3tier web app on an AWS EC2 instatnce.
+- Frontend app can be accessed through this URL:
+    ```bash
+    http://http://52.10.23.104:3000
+    ```
+- Backend app endpoint can be accessed through this URL:
+    ```bash
+    http://http://52.10.23.104:3001/api
+    ```
 ## Time for some Screen Shots<a name="screen_shots"></a>
 - Running the web app locally
 ![05-app](screen_shots/05-app.png)
