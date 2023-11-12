@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: 3tier-web-app
+spec:
+  rules:
+  - host: robusta.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: front-app-svc
+            port:
+              number: 3000
+      - path: /backend
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-app-svc
+            port:
+              number: 3001
+      - path: /db
+        pathType: Prefix
+        backend:
+          service:
+            name: mongo
+            port:
+              number: 27017
